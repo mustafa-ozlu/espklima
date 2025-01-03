@@ -1,5 +1,5 @@
 // ESP8266'nın IP adresini buraya yazın
-const ESP8266_IP = "http://192.168.1.100";
+const ESP8266_IP = "http://192.168.1.33";
 
 document.addEventListener("DOMContentLoaded", () => {
   const btnOn = document.getElementById("btn-on");
