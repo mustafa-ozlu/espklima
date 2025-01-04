@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Cihazı kapat
   btnOff.addEventListener("click", async () => {
     try {
-      const response = await fetch(`${ESP8266_IP}/control`, {
+      const response = await fetch(`https://api.thingspeak.com/channels/2801292/feeds.json?results=2`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,18 +44,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Sensör verilerini güncelle
   async function fetchSensorData() {
-    try {
-      const response = await fetch(`${ESP8266_IP}/sensor`);
-      const data = await response.json();
-      tempElement.textContent = data.temperature.toFixed(1);
-      humidityElement.textContent = data.humidity.toFixed(1);
-    } catch (error) {
-      tempElement.textContent = "Hata";
-      humidityElement.textContent = "Hata";
-    }
-  }
+  
+    const url = "https://api.thingspeak.com/channels/2801292/feeds.json?results=2";
+
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        const feeds = data.feeds;
+    
+        // İlk feed'in değerlerini al
+        if (feeds.length > 0) {
+          const firstFeed = feeds[0];
+          const temp = firstFeed.field1;
+          const humidity = firstFeed.field2;
+    
+          // HTML elementlerine değerleri yerleştir
+          document.getElementById("tempElement").textContent = temp || "N/A";
+          document.getElementById("humidityElement").textContent = humidity || "N/A";
+        } else {
+          console.warn("No feeds found in the data.");
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        document.getElementById("tempElement").textContent = "Error";
+        document.getElementById("humidityElement").textContent = "Error";
+      });
+    
 
   // Sensör verilerini her 5 saniyede bir güncelle
   setInterval(fetchSensorData, 5000);
   fetchSensorData();
-});
+);
