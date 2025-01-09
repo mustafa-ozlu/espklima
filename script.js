@@ -1,13 +1,13 @@
 
         // Firebase yapılandırması
         const firebaseConfig = {
-		apiKey: "AIzaSyDMjwPzCrOkrW4ARknWoUeD5HPMKjO2Rxw",
-  		authDomain: "klima-hvl.firebaseapp.com",
-  		databaseURL: "https://klima-hvl-default-rtdb.europe-west1.firebasedatabase.app",
-  		projectId: "klima-hvl",
-  		storageBucket: "klima-hvl.firebasestorage.app",
-  		messagingSenderId: "560581085174",
-  		appId: "1:560581085174:web:d742b22a031937211f29d7",
+		apiKey: "YOUR API KEY",
+  		authDomain: "YOUR PROJECT.firebaseapp.com",
+  		databaseURL: "https://YOUR DATABASE.firebasedatabase.app",
+  		projectId: "YOUR PROJECT ID",
+  		storageBucket: "YOUR PROJECT.firebasestorage.app",
+  		messagingSenderId: "YOUR ID",
+  		appId: "1:YOUR ID:web:YOUR WEB ID",
         };
 
         // Firebase'i başlat
@@ -34,9 +34,9 @@
         // Veri güncellemelerini başlat
         updateData();
 
-
-city = "Istanbul";
-apikey = "6040d630cdeed286ab0cb1a2da7ed9b1";
+//OPENWEATHERMAP
+city = "YOUR CITY";
+apikey = "OPENWEATHER API KEY";
 lang = "tr";
 units = "metric";
 link =
@@ -55,8 +55,7 @@ request.onload = function () {
   icon = data.list[0].weather[0].icon;
   let iconurl = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
   icourl.src = iconurl;
-//  console.log(iconurl);
-//  document.getElementById("icourl").innerHTML = iconurl;
+
 };
 request.send();
 
