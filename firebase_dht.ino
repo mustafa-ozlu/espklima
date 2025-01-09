@@ -12,14 +12,14 @@
 #include "addons/RTDBHelper.h"
 
 // WiFi ayarları
-const char* ssid = "NGOPV";
-const char* password = "62354801";
+const char* ssid = "YOUR SSID";
+const char* password = "WIFI PASSWORD";
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 10800;      // GMT+3 için 10800 saniye (Türkiye için kış saati)
 const int   daylightOffset_sec = 0;  // Yaz saati farkı (1 saat) 
 // Firebase ayarları
-#define DATABASE_URL "https://klima-hvl-default-rtdb.europe-west1.firebasedatabase.app/"
-#define API_KEY "AIzaSyDMjwPzCrOkrW4ARknWoUeD5HPMKjO2Rxw"
+#define DATABASE_URL "https://YOUR DATABASE.firebasedatabase.app/"
+#define API_KEY "YOUR API KEY"
 FirebaseData firebaseData;
 FirebaseAuth auth;
 FirebaseConfig config;
