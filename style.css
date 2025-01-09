@@ -1,48 +1,58 @@
+@import: url(https://fonts.googleapis.com/css?family=Roboto+Condensed);
+html { 
+
+	     text-align: center;}
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f9;
-  color: #333;
-  margin: 0;
-  padding: 0;
+  font-family: 'Roboto Condensed', sans-serif;
+  height: 100%;
+  background-color: black;
+  color: #fff;
+  //text-transform: uppercase;
 }
-
 .container {
-  max-width: 600px;
-  margin: 50px auto;
   text-align: center;
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
 h1 {
-  margin-bottom: 20px;
+  margin-left: 30px;
+  margin-bottom: 30px;
+  text-align: center;
 }
-
-.controls button {
-  padding: 10px 20px;
-  margin: 10px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
+button {
+  width: 90px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  text-align: center;
+  color: #000;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-left: 30px;
+  margin-bottom: 30px;
   cursor: pointer;
+  display: inline-block;
+  background-color: transparent;
+  border: 3px solid #00d7c3;
+  border-radius: 50px;
+  -webkit-transition: all .15s ease-in-out;
+  transition: all .15s ease-in-out;
+  color: #00d7c3;
 }
 
-#btn-on {
-  background-color: #28a745;
-  color: #fff;
+button:hover {
+  box-shadow: 0 0 10px 0 #00d7c3 inset, 0 0 20px 2px #00d7c3;
+  border: 3px solid #00d7c3;
 }
 
-#btn-off {
-  background-color: #dc3545;
-  color: #fff;
-}
-
-.status {
-  margin-top: 20px;
-}
-
-#device-status {
-  font-weight: bold;
-}
+ p { 
+   font-size: 1.5rem;
+   }
+   .units { font-size: 1.2rem; }
+   .dht-labels{
+   	font-size: 1.3rem;
+   	vertical-align:middle;
+   	padding-bottom: 15px;
+ 	   }
+.statusbar { 
+   font-size: 12px;
+   text-align: center;
+   color: skyblue;
+   }

@@ -1,28 +1,39 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Klima Kontrol Paneli</title>
-  <link rel="stylesheet" href="style.css">
-  <script defer src="script.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Havelsan Konteyner Kontrol Paneli</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>ESP Klima Kontrol Paneli</h1>
-    <div class="sensor-data">
-      <h2>Sensor Verileri</h2>
-      <p><strong>Sıcaklık:</strong> <span id="temperature">Bekleniyor...</span> °C</p>
-      <p><strong>Nem:</strong> <span id="humidity">Bekleniyor...</span> %</p>
+    <h1>Konteyner Kontrol Paneli</h1>
+    <div class="data">
+        <p>
+	   <i class="fas fa-thermometer-half" style="color:#059e8a;"></i> 
+    	   <span class="dht-labels">Sıcaklık:</span> 
+	   <span id="temperature">--</span> 
+	   <sup class="units">&deg;C</sup><img id="icourl" src="" height="60" width="60" />
+	</p>
+        <p>
+	   <i class="fas fa-tint" style="color:#00add6;"></i> 
+    	   <span class="dht-labels">Nem</span>
+    	   <span id="humidity">--</span>
+    	   <sup class="units">%</sup>
+	</p>
     </div>
-    <div class="controls">
-      <button id="btn-on">Aç</button>
-      <button id="btn-off">Kapat</button>
+    <div class="button-container">
+        <button onclick="sendCommand('ISIT')">ISIT</button>
+        <button onclick="sendCommand('SOGUT')">SOĞUT</button>
+        <button onclick="sendCommand('KAPAT')">KAPAT</button>
     </div>
-    <div class="status">
-      <h2>Durum</h2>
-      <p id="device-status">Bağlantı bekleniyor...</p>
+    <div class="statusbar">
+	<span id="status">--</span>
     </div>
-  </div>
 </body>
 </html>
