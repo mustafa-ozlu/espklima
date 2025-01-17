@@ -16,7 +16,7 @@ const char* ssid = "YOUR SSID";
 const char* password = "WIFI PASSWORD";
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 10800;      // GMT+3 için 10800 saniye (Türkiye için kış saati)
-const int   daylightOffset_sec = 0;  // Yaz saati farkı (1 saat) 
+const int   daylightOffset_sec = 0;  // Yaz saati farkı (0 saat) 
 // Firebase ayarları
 #define DATABASE_URL "https://YOUR DATABASE.firebasedatabase.app/"
 #define API_KEY "YOUR API KEY"
@@ -42,7 +42,7 @@ void ISIT_KODU() {
   ac.setSwingVertical(kMitsubishiHeavy88SwingVAuto);
   ac.send();
   Firebase.setString(firebaseData, "/KomutDurumu", "Isıtma Açıldı");
-  Firebase.setString(firebaseData, "/Komut", "Isıtıyor"); // Komut sıfırlama
+  Firebase.setString(firebaseData, "/Komut", "Isıtıyor"); 
 }
 void SOGUT_KODU(){
   ac.setPower(true);
@@ -52,13 +52,13 @@ void SOGUT_KODU(){
   ac.setSwingVertical(kMitsubishiHeavy88SwingVAuto);
   ac.send();
   Firebase.setString(firebaseData, "/KomutDurumu", "Soğutma Açıldı");
-  Firebase.setString(firebaseData, "/Komut", "Soğutuyor"); // Komut sıfırlama
+  Firebase.setString(firebaseData, "/Komut", "Soğutuyor"); 
 }
 void KAPAT_KODU() {
   ac.setPower(false);
   ac.send();
   Firebase.setString(firebaseData, "/KomutDurumu", "Klima Kapandı");
-  Firebase.setString(firebaseData, "/Komut", "Kapalı"); // Komut sıfırlama
+  Firebase.setString(firebaseData, "/Komut", "Kapalı"); 
 }
 bool signupOK = false;
 void printLocalTime() {
@@ -114,30 +114,44 @@ void setup() {
 
   // IR vericiyi başlat
   ac.begin();
+  Firebase.setString(firebaseData, "/Komut", "ESP Online");
 
 }
 
 void loop() {
   // DHT11 sensöründen sıcaklık ve nem değerlerini al
-  float temperature = dht.readTemperature();
-  float humidity = dht.readHumidity();
-
-  if (isnan(temperature) || isnan(humidity)) {
-    Serial.println("DHT11 okuma hatası!");
-    return;
-  }
-
+  float temperatureSum = 0; 
+  float humiditySum = 0; 
+  int count = 10; 
+  for (int i = 0; i < count; i++) { 
+    float temp = dht.readTemperature(); 
+    float hum = dht.readHumidity(); 
+    if (isnan(temp) || isnan(hum)) {
+      Serial.println("Sensörden veri okunamadı."); 
+      } else { 
+        temperatureSum += temp; 
+        humiditySum += hum; 
+        } 
+    delay(500); // 1 saniye bekle 
+        } 
+  int avgTemperature = temperatureSum / count; 
+  int avgHumidity = humiditySum / count;
+  // Sonuçları yazdır
+  Serial.print("Sıcaklık (°C): ");
+  Serial.print(avgTemperature);
+  Serial.print("\tNem (%): ");
+  Serial.println(avgHumidity);
+ 
   // Firebase'e sıcaklık ve nem verilerini gönder
-  Firebase.setFloat(firebaseData, "/Sensor/Sicaklik", temperature);
-  Firebase.setFloat(firebaseData, "/Sensor/Nem", humidity);
-
+  Firebase.setFloat(firebaseData, "/Sensor/Sicaklik", avgTemperature);
+  Firebase.setFloat(firebaseData, "/Sensor/Nem", avgHumidity);
+  
   // Firebase'den komutları oku
   if (Firebase.getString(firebaseData, "/Komut")) {
     String command = firebaseData.stringData();
     Serial.println("Gelen Komut: " + command);
-    if ((command=="Soğutuyor")||(command=="Isıtıyor") || (command=="Kapalı")){
-      Serial.print(".");
-    } else if (command == "ISIT") {
+     
+    if (command == "ISIT") {
       ISIT_KODU();
       Serial.println("ISIT komutu gönderildi.");
     } else if (command == "SOGUT") {
@@ -147,13 +161,10 @@ void loop() {
       KAPAT_KODU();
       Serial.println("KAPAT komutu gönderildi.");
     } 
-
   } else {
-    Firebase.setString(firebaseData, "/KomutDurumu", "HATA");
-    Serial.println("Komut okunamadı: " + firebaseData.errorReason());
-    ESP.restart();
-    
+      Serial.println("Komut okunamadı: " + firebaseData.errorReason());
+      ESP.restart();
   }
-
-  delay(2000); // 2 saniye bekle
+  delay(5000); // 5 saniye bekle
+  
 }
