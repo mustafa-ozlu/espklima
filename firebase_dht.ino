@@ -169,16 +169,22 @@ void loop() {
   if (Firebase.getString(firebaseData, "/Komut"))  {
     String command = firebaseData.stringData();
     Serial.println("Gelen Komut: " + command+"\tDerece: "+settemp);
-    if ((command != lastCommand) || (lastTemp !=settemp)) { 
-      if (command == "ISIT") {
-        ISIT_KODU(settemp);
-      } else if ((command == "SOGUT") || (lastTemp !=settemp)) {
-        SOGUT_KODU(settemp);
-      } else if (command == "KAPAT") {
-        KAPAT_KODU(); 
-      } 
-      lastCommand = command;
-      lastTemp=settemp;
+    if ((command != lastCommand) || (lastTemp != settemp)) {
+        if (command == "ISIT") {
+            ISIT_KODU(settemp);
+        } else if (command == "SOGUT") {
+            SOGUT_KODU(settemp);
+        } else if (command == "KAPAT") {
+            KAPAT_KODU();
+        }
+        lastCommand = command;
+        lastTemp = settemp;
+    } else if ((command == "ISIT" || command == "SOGUT") && (lastTemp != settemp)) {
+        if (command == "ISIT") {
+            ISIT_KODU(settemp);
+        } else if (command == "SOGUT") {
+            SOGUT_KODU(settemp);
+        }
     }
   } else {
       Serial.println("Komut okunamadı: " + firebaseData.errorReason());
