@@ -1,32 +1,35 @@
-@import: url(https://fonts.googleapis.com/css?family=Roboto+Condensed);
+
 html { 
 
 	     text-align: center;}
 body {
-  font-family: 'Roboto Condensed', sans-serif;
-  height: 100%;
+  font-family: Papyrus, 'Times New Roman', serif;
+ 
   background-color: black;
   color: #fff;
-  //text-transform: uppercase;
+  justify-content: center; 
+  align-items: center; 
+  height: 100%; margin: 0;
+  
 }
 .container {
   text-align: center;
 }
 h1 {
-  margin-left: 30px;
-  margin-bottom: 30px;
+  margin-left: 10px;
+  margin-bottom: 10px;
   text-align: center;
 }
 button {
-  width: 90px;
-  padding-top: 15px;
-  padding-bottom: 15px;
+  width: 100px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   text-align: center;
   color: #000;
   text-transform: uppercase;
   font-weight: 600;
-  margin-left: 30px;
-  margin-bottom: 30px;
+  margin-left: 10px;
+  margin-bottom: 10px;
   cursor: pointer;
   display: inline-block;
   background-color: transparent;
@@ -43,16 +46,76 @@ button:hover {
 }
 
  p { 
-   font-size: 1.5rem;
+   font-size: 0.3rem;
    }
-   .units { font-size: 1.2rem; }
+   .units { font-size: 1.3rem; }
    .dht-labels{
-   	font-size: 1.3rem;
+   	font-size: 1.2rem;
    	vertical-align:middle;
    	padding-bottom: 15px;
  	   }
 .statusbar { 
-   font-size: 12px;
+   font-size: 14px;
    text-align: center;
    color: skyblue;
    }
+
+table {
+  border: 0px solid aqua;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+}
+table td, table th {
+   border: 1px solid darkred;
+   
+   padding: 10px 10px;
+}
+.units { font-size: 1.3rem; }
+td.thead {
+  font-size: 20px;
+  color:aqua;
+  font-weight:bold;
+  }
+table thead th {
+ 
+ font-weight:bold;
+ color:aqua;
+ text-align: center;
+}
+
+#spinButton { 
+	width: 60px; 
+	height: 40px; 
+	font-size: 18px;
+	text-align: center; 
+	background-color: black;
+	color:aqua;
+} 
+/* Spin button butonlarını özelleştirme */ 
+input[type=number]::-webkit-outer-spin-button, 
+input[type=number]::-webkit-inner-spin-button { 
+	-webkit-appearance: none; 
+	margin: 0; } 
+input[type=number] { 
+	-moz-appearance: textfield; } 
+/* Butonları yeniden stilize etme */ 
+.spin-button-container { 
+	display: flex; 
+	align-items: center; 
+	justify-content: center;
+	} 
+.spin-button { 
+	display: inline-block; 
+	width: 40px; 
+	height: 40px; 
+	font-size: 24px; 
+	text-align: center; 
+	font-weight:bold;
+	cursor: pointer; 
+	user-select: none; 
+	background-color: yellow; 
+	color: red; 
+	border: none; 
+	/* margin: 5px; 
+	border-radius: 5px; }

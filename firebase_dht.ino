@@ -1,10 +1,12 @@
 #include <ESP8266WiFi.h>
 #include <FirebaseESP8266.h>
 #include <IRremoteESP8266.h>
+#include <WiFiClient.h>
 #include <IRsend.h>
 #include <DHT.h>
 #include <ir_MitsubishiHeavy.h>
 #include <WiFiUdp.h>
+
 #include <time.h>
 //Provide the token generation process info.
 #include "addons/TokenHelper.h"
@@ -12,14 +14,14 @@
 #include "addons/RTDBHelper.h"
 
 // WiFi ayarları
-const char* ssid = "YOUR SSID";
-const char* password = "WIFI PASSWORD";
+const char* ssid = "NGOPV";
+const char* password = "62354801";
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 10800;      // GMT+3 için 10800 saniye (Türkiye için kış saati)
-const int   daylightOffset_sec = 0;  // Yaz saati farkı (0 saat) 
+const int   daylightOffset_sec = 0;  // Yaz saati farkı (1 saat) 
 // Firebase ayarları
-#define DATABASE_URL "https://YOUR DATABASE.firebasedatabase.app/"
-#define API_KEY "YOUR API KEY"
+#define DATABASE_URL "https://klima-hvl-default-rtdb.europe-west1.firebasedatabase.app/"
+#define API_KEY "AIzaSyDMjwPzCrOkrW4ARknWoUeD5HPMKjO2Rxw"
 FirebaseData firebaseData;
 FirebaseAuth auth;
 FirebaseConfig config;
@@ -30,36 +32,52 @@ const uint16_t kIrLed = 4;
 IRMitsubishiHeavy88Ac ac(kIrLed);
 
 // DHT11 Sensör ve IR verici nesneleri
-DHT dht(DHTPIN, DHT11);
+DHT dht(DHTPIN,DHT11);
+String lastCommand = "";
+int lastTemp;
+int settemp;
+String newHostname = "Hvlsn_Konteyner";
 
 // IR kodları (Mitsubishi Heavy için örnek)
 
-void ISIT_KODU() {
+void ISIT_KODU(int settemp) {
+  
   ac.setPower(true);
   ac.setMode(kMitsubishiHeavyHeat);
-  ac.setTemp(30);
+  ac.setTemp(settemp);
   ac.setFan(kMitsubishiHeavy88FanAuto);
   ac.setSwingVertical(kMitsubishiHeavy88SwingVAuto);
   ac.send();
+  Serial.print(settemp);
+  Serial.println("C Isıtıyor");
   Firebase.setString(firebaseData, "/KomutDurumu", "Isıtma Açıldı");
-  Firebase.setString(firebaseData, "/Komut", "Isıtıyor"); 
+  
 }
-void SOGUT_KODU(){
+void SOGUT_KODU(int settemp){
+  
   ac.setPower(true);
   ac.setMode(kMitsubishiHeavyCool);
-  ac.setTemp(22);
+  ac.setTemp(settemp);
   ac.setFan(kMitsubishiHeavy88FanAuto);
   ac.setSwingVertical(kMitsubishiHeavy88SwingVAuto);
   ac.send();
+  Serial.print(settemp);
+  Serial.println("C Soğutuyor");
   Firebase.setString(firebaseData, "/KomutDurumu", "Soğutma Açıldı");
-  Firebase.setString(firebaseData, "/Komut", "Soğutuyor"); 
+  
 }
 void KAPAT_KODU() {
   ac.setPower(false);
   ac.send();
   Firebase.setString(firebaseData, "/KomutDurumu", "Klima Kapandı");
-  Firebase.setString(firebaseData, "/Komut", "Kapalı"); 
 }
+int setTemp(){
+  if (Firebase.get(firebaseData, "/Derece")) {
+    settemp = firebaseData.intData();
+  }
+  return settemp;
+}
+
 bool signupOK = false;
 void printLocalTime() {
   struct tm timeinfo;
@@ -78,6 +96,7 @@ void setup() {
   Serial.begin(115200);
   ac.begin();
   // WiFi'ye bağlan
+  WiFi.hostname(newHostname.c_str());
   WiFi.begin(ssid, password);
   Serial.print("WiFi'ye bağlanılıyor");
   while (WiFi.status() != WL_CONNECTED) {
@@ -88,15 +107,17 @@ void setup() {
   Serial.println("\tWiFi bağlantısı başarılı!");
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
   printLocalTime();
+  dht.begin();
   // Firebase'i başlat
-    config.api_key = API_KEY;
+  config.api_key = API_KEY;
 
   /* Assign the RTDB URL (required) */
   config.database_url = DATABASE_URL;
 
   /* Sign up */
   if (Firebase.signUp(&config, &auth, "", "")){
-    Serial.println("ok");
+    Serial.println("Firebase ok");
+    
     signupOK = true;
   }
   else{
@@ -108,17 +129,14 @@ void setup() {
   
   Firebase.begin(&config, &auth);
   Firebase.reconnectWiFi(true);
-
-  // DHT11'i başlat
-  dht.begin();
-
+  
   // IR vericiyi başlat
   ac.begin();
-  Firebase.setString(firebaseData, "/Komut", "ESP Online");
-
+  Firebase.setString(firebaseData, "/KomutDurumu", "ESP Online"); // Komut sıfırlama
 }
 
 void loop() {
+  setTemp();
   // DHT11 sensöründen sıcaklık ve nem değerlerini al
   float temperatureSum = 0; 
   float humiditySum = 0; 
@@ -145,22 +163,23 @@ void loop() {
   // Firebase'e sıcaklık ve nem verilerini gönder
   Firebase.setFloat(firebaseData, "/Sensor/Sicaklik", avgTemperature);
   Firebase.setFloat(firebaseData, "/Sensor/Nem", avgHumidity);
-  
+
+
   // Firebase'den komutları oku
-  if (Firebase.getString(firebaseData, "/Komut")) {
+  if (Firebase.getString(firebaseData, "/Komut"))  {
     String command = firebaseData.stringData();
-    Serial.println("Gelen Komut: " + command);
-     
-    if (command == "ISIT") {
-      ISIT_KODU();
-      Serial.println("ISIT komutu gönderildi.");
-    } else if (command == "SOGUT") {
-      SOGUT_KODU();
-      Serial.println("SOGUT komutu gönderildi.");
-    } else if (command == "KAPAT") {
-      KAPAT_KODU();
-      Serial.println("KAPAT komutu gönderildi.");
-    } 
+    Serial.println("Gelen Komut: " + command+"\tDerece: "+settemp);
+    if ((command != lastCommand) || (lastTemp !=settemp)) { 
+      if (command == "ISIT") {
+        ISIT_KODU(settemp);
+      } else if ((command == "SOGUT") || (lastTemp !=settemp)) {
+        SOGUT_KODU(settemp);
+      } else if (command == "KAPAT") {
+        KAPAT_KODU(); 
+      } 
+      lastCommand = command;
+      lastTemp=settemp;
+    }
   } else {
       Serial.println("Komut okunamadı: " + firebaseData.errorReason());
       ESP.restart();

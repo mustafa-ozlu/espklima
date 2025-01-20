@@ -3,30 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klima Kontrol Paneli</title>
+    <title>Havelsan Konteyner Kontrol Paneli</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">    
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="script.js"></script>
+
+    <script src="script.js" defer></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Klima Kontrol Paneli</h1>
-    <div class="data">
-        <p>
-	   <i class="fas fa-thermometer-half" style="color:#059e8a;"></i> 
-    	   <span class="dht-labels">Sıcaklık:</span> 
-	   <span id="temperature">--</span> 
-	   <sup class="units">&deg;C</sup><img id="icourl" src="" height="60" width="60" />
-	</p>
-        <p>
-	   <i class="fas fa-tint" style="color:#00add6;"></i> 
-    	   <span class="dht-labels">Nem</span>
-    	   <span id="humidity">--</span>
-    	   <sup class="units">%</sup>
-	</p>
-    </div>
+    <h1>Konteyner Kontrol Paneli</h1>
+<iframe src="https://free.timeanddate.com/clock/i9q52hrs/n107/tltr28/fn13/fs16/fc0ff/tct/pct/ftb/pl0/pr0/pt0/tt0/tm1/ts1/ta1/tb4" frameborder="0" width="177" height="37" allowtransparency="true"></iframe>
+
+<table>
+    <tbody>
+    <tr>
+      <td class="thead"></td>
+      <td class="thead">Konteyner</td>
+      <td class="thead">İstanbul</td>
+      <td rowspan="3" class="thead"><img id="icourl" src="" height="100" width="100" /></td>
+      
+    </tr>
+ 
+
+    <tr>
+      <td ><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> 
+    	   <span class="dht-labels">Sıcaklık</span></td>
+      <td class=units id="temperature"></td>
+      <td class=units id="opentemp"></td>
+      
+    </tr>
+    <tr>
+      <td><i class="fas fa-tint" style="color:#00add6;"></i> 
+    	   <span class="dht-labels">Nem</span></td>
+      <td class=units id="humidity"></td>
+      <td class=units id="openh"></td>
+   
+      
+    </tr>
+  </tbody>
+</table>
+<p></p>
+<label for="spinButton">Isı Değeri Seçin: </label> 
+<div class="spin-button-container"> 
+    <div class="spin-button" onclick="changeValue(-1)">-</div> 
+	<input type="number" id="spinButton" name="spinButton" min="18" max="30" > 
+        <div class="spin-button" onclick="changeValue(1)">+</div> 
+</div>
+<br/>
     <div class="button-container">
         <button onclick="sendCommand('ISIT')">ISIT</button>
         <button onclick="sendCommand('SOGUT')">SOĞUT</button>
