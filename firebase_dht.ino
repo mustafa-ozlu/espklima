@@ -14,14 +14,14 @@
 #include "addons/RTDBHelper.h"
 
 // WiFi ayarları
-const char* ssid = "NGOPV";
-const char* password = "62354801";
+const char* ssid = "***";
+const char* password = "****";
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 10800;      // GMT+3 için 10800 saniye (Türkiye için kış saati)
-const int   daylightOffset_sec = 0;  // Yaz saati farkı (1 saat) 
+const int   daylightOffset_sec = 0;  // Yaz saati farkı (0 saat) 
 // Firebase ayarları
-#define DATABASE_URL "https://klima-hvl-default-rtdb.europe-west1.firebasedatabase.app/"
-#define API_KEY "AIzaSyDMjwPzCrOkrW4ARknWoUeD5HPMKjO2Rxw"
+#define DATABASE_URL "https://*.europe-west1.firebasedatabase.app/"
+#define API_KEY "*"
 FirebaseData firebaseData;
 FirebaseAuth auth;
 FirebaseConfig config;
@@ -36,7 +36,7 @@ DHT dht(DHTPIN,DHT11);
 String lastCommand = "";
 int lastTemp;
 int settemp;
-String newHostname = "Hvlsn_Konteyner";
+String newHostname = "Konteyner";
 
 // IR kodları (Mitsubishi Heavy için örnek)
 
@@ -49,7 +49,7 @@ void ISIT_KODU(int settemp) {
   ac.setSwingVertical(kMitsubishiHeavy88SwingVAuto);
   ac.send();
   Serial.print(settemp);
-  Serial.println("C Isıtıyor");
+  Serial.println(" C Isıtıyor");
   Firebase.setString(firebaseData, "/KomutDurumu", "Isıtma Açıldı");
   
 }
@@ -62,7 +62,7 @@ void SOGUT_KODU(int settemp){
   ac.setSwingVertical(kMitsubishiHeavy88SwingVAuto);
   ac.send();
   Serial.print(settemp);
-  Serial.println("C Soğutuyor");
+  Serial.println(" C Soğutuyor");
   Firebase.setString(firebaseData, "/KomutDurumu", "Soğutma Açıldı");
   
 }
