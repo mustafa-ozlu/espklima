@@ -1,13 +1,13 @@
 
         // Firebase yapılandırması
 const firebaseConfig = {
-		apiKey: "AIzaSyDMjwPzCrOkrW4ARknWoUeD5HPMKjO2Rxw",
-  		authDomain: "klima-hvl.firebaseapp.com",
-  		databaseURL: "https://klima-hvl-default-rtdb.europe-west1.firebasedatabase.app",
-  		projectId: "klima-hvl",
-  		storageBucket: "klima-hvl.firebasestorage.app",
-  		messagingSenderId: "560581085174",
-  		appId: "1:560581085174:web:d742b22a031937211f29d7",
+		apiKey: "API KEY",
+  		authDomain: "*.firebaseapp.com",
+  		databaseURL: "https://*.europe-west1.firebasedatabase.app",
+  		projectId: "*",
+  		storageBucket: "*.firebasestorage.app",
+  		messagingSenderId: "*",
+  		appId: "1:*:web:*",
         };
 
         // Firebase'i başlat
@@ -67,7 +67,7 @@ document.getElementById('spinButton').addEventListener('input', function() {
 updateData();
 
 city = "Istanbul";
-apikey = "6040d630cdeed286ab0cb1a2da7ed9b1";
+apikey = "*";
 lang = "tr";
 units = "metric";
 link =
