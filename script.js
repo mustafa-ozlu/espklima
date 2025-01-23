@@ -10,7 +10,7 @@ const firebaseConfig = {
   		appId: "1:*:web:*",
         };
 
-        // Firebase'i başlat
+       // Firebase'i başlat
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
@@ -32,6 +32,11 @@ const firebaseConfig = {
                 document.getElementById('spinButton').value = derece;
                 
             });
+	database.ref('/Fan').on('value', (snapshot) => {
+                const fan= snapshot.val();
+                document.getElementById('fanDropdown').value = fan;
+                
+            });
 
         }
 
@@ -46,7 +51,10 @@ function sendCommand(command) {
                 document.getElementById("status").innerText = "Komut gönderilemedi: " + error.message;
             });
     }
-
+document.getElementById("fanDropdown").addEventListener("change", function() { 
+	const selectedValue = parseInt(this.value, 10); 
+	firebase.database().ref('/Fan').set(selectedValue)
+ });
     // Firebase'den durum bilgisini dinle
 function changeValue(delta) { 
    const spinButton = document.getElementById('spinButton'); 
@@ -56,8 +64,6 @@ function changeValue(delta) {
 	sendToFirebase(value); } } 
 function sendToFirebase(value) { 
    firebase.database().ref('Derece').set(value)
-	.then(() => { 
-	   console.log(''); })
 	.catch((error) => { 
 	   console.error('Hata:', error); }); } 
 document.getElementById('spinButton').addEventListener('input', function() { 
