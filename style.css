@@ -20,29 +20,20 @@ h1 {
   margin-bottom: 10px;
   text-align: center;
 }
-button {
-  width: 100px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  text-align: center;
-  color: #000;
-  text-transform: uppercase;
-  font-weight: 600;
-  margin-left: 10px;
-  margin-bottom: 10px;
+.btn-default {
+  transition: transform .2s;
   cursor: pointer;
   display: inline-block;
   background-color: transparent;
-  border: 3px solid #00d7c3;
-  border-radius: 50px;
-  -webkit-transition: all .15s ease-in-out;
-  transition: all .15s ease-in-out;
-  color: #00d7c3;
+  
+  
 }
 
-button:hover {
-  box-shadow: 0 0 10px 0 #00d7c3 inset, 0 0 20px 2px #00d7c3;
-  border: 3px solid #00d7c3;
+.btn-default:hover {
+  transform: scale(1.5);
+}
+.btn-group {
+  padding:10px 5px;
 }
 
  p { 
@@ -82,15 +73,37 @@ table thead th {
  font-weight:bold;
  color:aqua;
  text-align: center;
-}
+} 
+.fan { 
+	display: flex; 
+	align-items: center; 
+	justify-content: center;
+	padding : 10px 10px;
+	} 
 
-#spinButton { 
-	width: 60px; 
-	height: 40px; 
+#fanDropdown { 
+	width: 160px; 
+	height: 50px; 
 	font-size: 18px;
 	text-align: center; 
 	background-color: black;
 	color:aqua;
+	display: flex; 
+	align-items: center; 
+	justify-content: center;
+	display: inline-block; 
+
+}
+
+
+#spinButton { 
+	width: 90px; 
+	height: 50px; 
+	font-size: 18px;
+	text-align: center; 
+	background-color: black;
+	color:aqua;
+
 } 
 /* Spin button butonlarını özelleştirme */ 
 input[type=number]::-webkit-outer-spin-button, 
@@ -104,6 +117,7 @@ input[type=number] {
 	display: flex; 
 	align-items: center; 
 	justify-content: center;
+	padding : 10px 5px;
 	} 
 .spin-button { 
 	display: inline-block; 
