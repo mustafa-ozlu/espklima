@@ -15,4 +15,4 @@ Firebase üzerinde web sayfası oluşturarak DHT11'den gelen değerler sergileni
 |DHT11 | (-) |  |GND                     |
 
 
-![Ekran Görüntüsü](/Screenshot0.png "Web Sayfası Görüntüsü")
+![Ekran Görüntüsü](/screenshot.png "Web Sayfası Görüntüsü")
