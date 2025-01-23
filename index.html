@@ -10,7 +10,17 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <script src="script.js" defer></script>
+    <script src="https://kit.fontawesome.com/54bcb3bdc9.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style.css">
+    	<!-- Font Awsome -->
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+	   <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+	<![endif]-->
 </head>
 <body>
     <h1>Konteyner Kontrol Paneli</h1>
@@ -45,20 +55,29 @@
   </tbody>
 </table>
 <p></p>
-<label for="spinButton">Isı Değeri Seçin: </label> 
+
+
 <div class="spin-button-container"> 
-    <div class="spin-button" onclick="changeValue(-1)">-</div> 
+<img src=".\temperatureset.jpg" id="settmp" height="50" width="50" >&nbsp&nbsp&nbsp&nbsp
+<i class="fa-solid fa-temperature-arrow-down fa-2x" style="color: #74C0FC;" onclick="changeValue(-1)"></i>
+  
 	<input type="number" id="spinButton" name="spinButton" min="18" max="30" > 
-        <div class="spin-button" onclick="changeValue(1)">+</div> 
-</div>
-<br/>
-    <div class="button-container">
-        <button onclick="sendCommand('ISIT')">ISIT</button>
-        <button onclick="sendCommand('SOGUT')">SOĞUT</button>
-        <button onclick="sendCommand('KAPAT')">KAPAT</button>
-    </div>
+        
+
+<i class="fa-solid fa-temperature-arrow-up fa-2x" style="color: #bd0000;" onclick="changeValue(1)"></i></div>
+<div class="fan"><img src=".\fan.png" id="fan" height="50" width="50" >&nbsp&nbsp&nbsp&nbsp
+<select id="fanDropdown"> <option value=0>Auto</option> <option value=2>Low</option> <option value=3>Med</option> <option value=4>High</option> <option value=6>Turbo</option> <option value=7>Eco</option> </select></div>
+
+
+<div class="btn-group">
+						<a class="btn btn-default mode-btn" id="mode_cooling" onclick="sendCommand('SOGUT')"><i class="fa fa-snowflake fa-2x" title="Soğut"></i>&nbsp&nbsp&nbsp&nbsp</a> 
+						<a class="btn btn-default mode-btn" id="mode_heating" onclick="sendCommand('ISIT')"><i class="fa fa-sun-o fa-2x" title="Isıt"></i>&nbsp&nbsp&nbsp&nbsp</a>
+						<a id="power-btn" class="btn btn-default" onclick="sendCommand('KAPAT')"><i class="fa fa-power-off fa-2x" title="Kapat"></i>
+					</div>
+
     <div class="statusbar">
 	<span id="status">--</span>
     </div>
 </body>
 </html>
+
