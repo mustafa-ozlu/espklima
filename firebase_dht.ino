@@ -26,43 +26,44 @@ FirebaseData firebaseData;
 FirebaseAuth auth;
 FirebaseConfig config;
 
+
 // Pin tanımlamaları
 #define DHTPIN 2
 const uint16_t kIrLed = 4;
 IRMitsubishiHeavy88Ac ac(kIrLed);
-
+String fantext;
 // DHT11 Sensör ve IR verici nesneleri
 DHT dht(DHTPIN,DHT11);
 String lastCommand = "";
 int lastTemp;
 int settemp;
-String newHostname = "Konteyner";
-
+int fan;
+int lastFan;
 // IR kodları (Mitsubishi Heavy için örnek)
 
-void ISIT_KODU(int settemp) {
+void ISIT_KODU(int settemp, int fan) {
   
   ac.setPower(true);
   ac.setMode(kMitsubishiHeavyHeat);
   ac.setTemp(settemp);
-  ac.setFan(kMitsubishiHeavy88FanAuto);
+  ac.setFan(fan);
   ac.setSwingVertical(kMitsubishiHeavy88SwingVAuto);
   ac.send();
   Serial.print(settemp);
-  Serial.println(" C Isıtıyor");
+  Serial.println("°C Isıtıyor");
   Firebase.setString(firebaseData, "/KomutDurumu", "Isıtma Açıldı");
   
 }
-void SOGUT_KODU(int settemp){
+void SOGUT_KODU(int settemp, int fan){
   
   ac.setPower(true);
   ac.setMode(kMitsubishiHeavyCool);
   ac.setTemp(settemp);
-  ac.setFan(kMitsubishiHeavy88FanAuto);
+  ac.setFan(fan);
   ac.setSwingVertical(kMitsubishiHeavy88SwingVAuto);
   ac.send();
   Serial.print(settemp);
-  Serial.println(" C Soğutuyor");
+  Serial.println("°C Soğutuyor");
   Firebase.setString(firebaseData, "/KomutDurumu", "Soğutma Açıldı");
   
 }
@@ -72,10 +73,24 @@ void KAPAT_KODU() {
   Firebase.setString(firebaseData, "/KomutDurumu", "Klima Kapandı");
 }
 int setTemp(){
-  if (Firebase.get(firebaseData, "/Derece")) {
+  if (Firebase.getInt(firebaseData, "/Derece")) {
     settemp = firebaseData.intData();
+  } else{
+    Serial.print("Settemp okunamadı: ");
+    Serial.println(firebaseData.errorReason()); 
   }
   return settemp;
+}
+
+int setfan(){
+  if (Firebase.getInt(firebaseData, "/Fan")) {
+    fan = firebaseData.intData();
+  
+  }else{
+    Serial.print("FAN okunamadı: ");
+    Serial.println(firebaseData.errorReason()); 
+  }
+  return fan;
 }
 
 bool signupOK = false;
@@ -96,7 +111,7 @@ void setup() {
   Serial.begin(115200);
   ac.begin();
   // WiFi'ye bağlan
-  WiFi.hostname(newHostname.c_str());
+ 
   WiFi.begin(ssid, password);
   Serial.print("WiFi'ye bağlanılıyor");
   while (WiFi.status() != WL_CONNECTED) {
@@ -131,12 +146,25 @@ void setup() {
   Firebase.reconnectWiFi(true);
   
   // IR vericiyi başlat
-  ac.begin();
-  Firebase.setString(firebaseData, "/KomutDurumu", "ESP Online"); // Komut sıfırlama
+  ac.begin(); 
 }
 
 void loop() {
   setTemp();
+  setfan();
+  if (fan==0){
+    fantext="AUTO";
+  }else if (fan==2){
+    fantext="LOW";
+  }else if(fan==3){
+    fantext="MED";
+  }else if(fan==4){
+    fantext="HIGH";
+  }else if(fan==6){
+    fantext="TURBO";
+  }else if(fan==7){
+    fantext="ECO";
+  }
   // DHT11 sensöründen sıcaklık ve nem değerlerini al
   float temperatureSum = 0; 
   float humiditySum = 0; 
@@ -150,12 +178,12 @@ void loop() {
         temperatureSum += temp; 
         humiditySum += hum; 
         } 
-    delay(500); // 1 saniye bekle 
+    delay(750); // 1 saniye bekle 
         } 
   int avgTemperature = temperatureSum / count; 
   int avgHumidity = humiditySum / count;
   // Sonuçları yazdır
-  Serial.print("Sıcaklık (°C): ");
+  Serial.print("Sıcaklık (C): ");
   Serial.print(avgTemperature);
   Serial.print("\tNem (%): ");
   Serial.println(avgHumidity);
@@ -168,28 +196,30 @@ void loop() {
   // Firebase'den komutları oku
   if (Firebase.getString(firebaseData, "/Komut"))  {
     String command = firebaseData.stringData();
-    Serial.println("Gelen Komut: " + command+"\tDerece: "+settemp);
-    if ((command != lastCommand) || (lastTemp != settemp)) {
+    Serial.println("Gelen Komut: " + command+"\tDerece: "+settemp+"°C "+"\t"+fantext);
+    if ((command != lastCommand) || (lastTemp != settemp) || (lastFan !=fan)) {
         if (command == "ISIT") {
-            ISIT_KODU(settemp);
+            ISIT_KODU(settemp,fan);
         } else if (command == "SOGUT") {
-            SOGUT_KODU(settemp);
+            SOGUT_KODU(settemp,fan);
         } else if (command == "KAPAT") {
             KAPAT_KODU();
         }
         lastCommand = command;
         lastTemp = settemp;
-    } else if ((command == "ISIT" || command == "SOGUT") && (lastTemp != settemp)) {
+        lastFan = fan;
+    } else if ((command == "ISIT" || command == "SOGUT") && (lastTemp != settemp)|| (lastFan !=fan)) {
         if (command == "ISIT") {
-            ISIT_KODU(settemp);
+            ISIT_KODU(settemp,fan);
         } else if (command == "SOGUT") {
-            SOGUT_KODU(settemp);
+            SOGUT_KODU(settemp,fan);
         }
     }
+
   } else {
       Serial.println("Komut okunamadı: " + firebaseData.errorReason());
       ESP.restart();
   }
-  delay(5000); // 5 saniye bekle
+  delay(2000); // 5 saniye bekle
   
 }
